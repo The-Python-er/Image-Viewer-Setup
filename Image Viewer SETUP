@@ -1,0 +1,114 @@
+import os
+info = ("""
+import PIL.Image
+from tkinter import ttk
+
+try:
+    from Tkinter import *
+    import tkFileDialog as filedialog
+except ImportError:
+    from tkinter import *
+    from tkinter import filedialog
+import PIL.ImageTk
+
+class App(Frame):
+    def chg_image(self):
+        if self.im.mode == "1": # bitmap image
+            self.img = PIL.ImageTk.BitmapImage(self.im, foreground="white")
+        else:              # photo image
+            self.img = PIL.ImageTk.PhotoImage(self.im)
+        self.la.config(image=self.img, bg="#000000",
+            width = self.img.width(), height=self.img.height())
+                           
+    def open(self):
+        filename = filedialog.askopenfilename()
+        if filename != "":
+            self.im = PIL.Image.open(filename)
+        self.chg_image()
+        self.num_page=0
+        self.num_page_tv.set(str(self.num_page+1))
+
+    def seek_prev(self):
+        self.num_page=self.num_page-1
+        if self.num_page < 0:
+            self.num_page = 0
+        self.im.seek(self.num_page)
+        self.chg_image()
+        self.num_page_tv.set(str(self.num_page+1))
+
+    def seek_next(self):
+        self.num_page=self.num_page+1
+        try:
+            self.im.seek(self.num_page)
+        except:
+            self.num_page=self.num_page-1
+        self.chg_image()
+        self.num_page_tv.set(str(self.num_page+1))
+
+    def __init__(self, master=None):
+        Frame.__init__(self, master)
+        self.master.title('Image Viewer')
+
+        self.num_page=0
+        self.num_page_tv = StringVar()
+
+        fram = Frame(self)
+        btn = ttk.Button(fram, text="Open Image",  command=self.open)
+        btn.grid(row=1,column=1,ipady=5, ipadx=5)
+        fram.pack(side=TOP, fill=BOTH)
+
+        self.la = Label(self)
+        self.la.pack()
+
+        self.pack()
+
+if __name__ == "__main__":
+    app = App(); app.mainloop()""")
+
+import tkinter
+from tkinter import ttk
+def ins():
+    lblha = ttk.Label(text="                                                          ")
+    lblha.place(x = 40,y = 0) 
+    pb = ttk.Progressbar(orient='horizontal',length=300,  mode='indeterminate')
+    pb.grid()
+    pb.start()
+    f = open("Image Viewer (GUI).pyw","w")
+    f.write(info)
+    f.close()
+    lbldone = ttk.Label(text="Image Viewer installed.")
+    lbldone.grid()
+    pb.stop()
+    
+
+def init():
+    gui = tkinter.Tk()
+    gui.title("Installer")
+    lbl = ttk.Label(gui,text="Press Install to install Image Viewer.")
+    btn3 = ttk.Button(gui,text="Install",command=ins)
+    lbl.grid()
+    btn3.grid()
+    gui.mainloop()
+def dele():
+    try:
+        os.remove("Image Viewer (GUI).pyw")
+        lbl5 =ttk.Label(text="Uninstall Finished.")
+        lbl5.grid()
+    except:
+        lbl10=ttk.Label(text="You did not install Image Viewer.")
+        lbl10.grid()
+def reinit():
+    m = tkinter.Tk()
+    m.title("Fix")
+    m.geometry("240x70")
+    lbl45 = ttk.Label(text="Select the options to fix Image Viewer.")
+    lbl45.grid()
+    btn = ttk.Button(m, text="Uninstall App",command=dele)
+    btn.grid()
+    m.mainloop()
+try:
+    name = open("Image Viewer (GUI).pyw","r")
+    name.close()
+    reinit()
+except:
+    init()
